@@ -9,19 +9,21 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-
 class Like(models.Model):
-    
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="likes", blank=True, null=True)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes", blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    CHOICES = (
-        ("like", "LIKE"), 
-        ("dislike", "DISLIKE"),
-        ("nothing", "NOTHING")
-
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="likes",
+        blank=True,
+        null=True,
     )
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name="likes", blank=True, null=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    CHOICES = (("nothing", "NOTHING"), ("like", "LIKE"), ("dislike", "DISLIKE"))
     like_type = models.CharField(max_length=10, choices=CHOICES, default="nothing")
+
 
 # class Comment(models.Model):
 #     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -31,4 +33,3 @@ class Like(models.Model):
 #     updated_at = models.DateTimeField(auto_now=True)
 #     likes = models.ManyToManyField(Likes, related_name="comments")
 #     replies = models.ManyToManyField("self", related_name="comment_replies")
-

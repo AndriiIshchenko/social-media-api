@@ -24,8 +24,9 @@ class PostViewSet(
     mixins.UpdateModelMixin,
 ):
     queryset = Post.objects.all().annotate(
-            likes_amount=Count("likes", filter=Q(likes__like_type="like")),
-        )
+        likes_amount=Count("likes", filter=Q(likes__like_type="like")),
+        dislikes_amount=Count("likes", filter=Q(likes__like_type="dislike")),
+    )
     serializer_class = PostSerializer
 
     def get_serializer_class(self):
@@ -34,18 +35,21 @@ class PostViewSet(
         if self.action == "like":
             return LikeSerializer
         return PostSerializer
-    
-    @action(detail=True, methods=['post'])
+
+    @action(detail=True, methods=["post"])
     def like(self, request, pk=None):
         post = self.get_object()
-        like, created = Like.objects.get_or_create(user=request.user, post=post, defaults={"like_type": request.POST.get("like_type")})
+        like, created = Like.objects.get_or_create(
+            user=request.user,
+            post=post,
+            defaults={"like_type": request.POST.get("like_type")},
+        )
         if not created:
             like.like_type = request.POST.get("like_type")
             like.save()
-        
+
         serializer = self.get_serializer(like)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
