@@ -38,7 +38,7 @@ class PostViewSet(
     @action(detail=True, methods=['post'])
     def like(self, request, pk=None):
         post = self.get_object()
-        like, created = Like.objects.get_or_create(user=request.user, post=post)
+        like, created = Like.objects.get_or_create(user=request.user, post=post, defaults={"like_type": request.POST.get("like_type")})
         if not created:
             like.like_type = request.POST.get("like_type")
             like.save()
