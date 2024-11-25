@@ -2,7 +2,7 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from posts.models import Like, Post
+from posts.models import Like, Post, UserProfile
 
 
 class LikeSerializer(serializers.ModelSerializer):
@@ -45,3 +45,14 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "likes_amount",
             "dislikes_amount",
         )
+
+
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ["id", "user", "nickname", "bio", "birth_date"]
+        read_only_fields = ["id", "user"]
+
+

@@ -1,14 +1,13 @@
 from django.shortcuts import render
 
-# Create your views here.
 from django.db.models import F, Q, Count
 from rest_framework import mixins, status
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
-from posts.models import Like, Post
-from posts.serializers import LikeSerializer, PostDetailSerializer, PostSerializer
+from posts.models import Like, Post, UserProfile
+from posts.serializers import LikeSerializer, PostDetailSerializer, PostSerializer, UserProfileSerializer
 
 
 class LikeViewSet(GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
@@ -67,3 +66,142 @@ class PostViewSet(
 
     def perform_update(self, serializer):
         serializer.save()
+
+
+
+
+class UserProfileViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    GenericViewSet,
+):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    # permission_classes = (OwnerOrReadOnlyProfile,)
+
+    def get_queryset(self):
+        """Retrieve the user's profiles with filter"""
+        nickname = self.request.query_params.get("nickname")
+        first_name = self.request.query_params.get("first_name")
+        last_name = self.request.query_params.get("last_name")
+
+        if self.action == "list":
+            queryset = self.queryset.select_related("user").prefetch_related(
+                "posts__comments",
+                "posts__likes",
+                "sent_messages",
+                "following",
+                "followers",
+            )
+        elif self.action == "retrieve":
+            queryset = self.queryset.select_related()
+        else:
+            queryset = self.queryset
+
+        if nickname:
+            queryset = queryset.filter(nickname__icontains=nickname)
+        if first_name:
+            queryset = queryset.filter(user__first_name__icontains=first_name)
+        if last_name:
+            queryset = queryset.filter(user__last_name__icontains=last_name)
+
+        return queryset.distinct()
+
+    def get_serializer_class(self):
+        # if self.action == "list":
+        #     return UserProfileListSerializer
+        # if self.action == "retrieve":
+        #     return ProfileRetrieveSerializer
+        # if self.action == "upload_image":
+        #     return ProfileImageSerializer
+        return UserProfileSerializer
+
+    def perform_create(self, serializer):
+        if UserProfile.objects.filter(user=self.request.user).exists():
+            raise ValidationError("User already has profile")
+        serializer.save(user=self.request.user)
+
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="upload-image",
+    )
+    def upload_image(self, request, pk=None):
+        profile = self.get_object()
+        serializer = self.get_serializer(profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # @action(
+    #     methods=["POST"],
+    #     detail=True,
+    #     url_path="follow",
+    #     permission_classes=(IsAuthenticated,),
+    # )
+    # def follow(self, request, pk=None):
+    #     profile_to_follow = self.get_object()
+
+    #     serializer = ProfileFollowSerializer(
+    #         data={"profile_to_follow": profile_to_follow.id},
+    #         context={"request": request},
+    #     )
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+
+    #     return Response(
+    #         {"detail": f"Successfully followed {profile_to_follow.nickname}"},
+    #         status=status.HTTP_200_OK,
+    #     )
+
+    # @action(
+    #     methods=["POST"],
+    #     detail=True,
+    #     url_path="unfollow",
+    #     permission_classes=(IsAuthenticated,),
+    # )
+    # def unfollow(self, request, pk=None):
+    #     profile_to_unfollow = self.get_object()
+
+    #     serializer = ProfileUnfollowSerializer(
+    #         data={"profile_to_unfollow": profile_to_unfollow.id},
+    #         context={"request": request},
+    #     )
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+
+    #     return Response(
+    #         {"detail": f"Successfully unfollowed "
+    #                    f"{profile_to_unfollow.nickname}"},
+    #         status=status.HTTP_200_OK,
+    #     )
+
+    # @extend_schema(
+    #     parameters=[
+    #         OpenApiParameter(
+    #             name="nickname",
+    #             description="Filter by nickname",
+    #             required=False,
+    #             type=str,
+    #         ),
+    #         OpenApiParameter(
+    #             name="first_name",
+    #             description="Filter by first name",
+    #             required=False,
+    #             type=str,
+    #         ),
+    #         OpenApiParameter(
+    #             name="last_name",
+    #             description="Filter by last name",
+    #             required=False,
+    #             type=str,
+    #         ),
+    #     ]
+    # )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
