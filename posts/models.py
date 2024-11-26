@@ -14,6 +14,11 @@ class Post(models.Model):
 
 
 class Like(models.Model):
+    class LikeChoices(models.TextChoices):
+        NOTHING = "nothing"
+        LIKE = "like"
+        DISLIKE = "dislike"
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -25,8 +30,8 @@ class Like(models.Model):
         Post, on_delete=models.CASCADE, related_name="likes", blank=True, null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    CHOICES = (("nothing", "NOTHING"), ("like", "LIKE"), ("dislike", "DISLIKE"))
-    like_type = models.CharField(max_length=10, choices=CHOICES, default="nothing")
+   
+    like_type = models.CharField(max_length=10, choices=LikeChoices, default=LikeChoices.NOTHING)
 
 
 # class Comment(models.Model):
