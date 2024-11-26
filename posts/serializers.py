@@ -6,8 +6,6 @@ from posts.models import Like, Post, UserProfile
 
 
 class LikeSerializer(serializers.ModelSerializer):
-    like_type = serializers.ChoiceField(choices=Like.CHOICES)
-
     class Meta:
         model = Like
         fields = ("like_type",)
