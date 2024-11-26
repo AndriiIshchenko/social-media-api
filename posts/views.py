@@ -5,9 +5,10 @@ from rest_framework import mixins, status
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 
 from posts.models import Like, Post, UserProfile
-from posts.serializers import LikeSerializer, PostDetailSerializer, PostSerializer, UserProfileSerializer
+from posts.serializers import LikeSerializer, PostDetailSerializer, PostSerializer, UserProfileDetailSerializer, UserProfileFollowSerializer, UserProfileImageSerializer, UserProfileListSerializer, UserProfileSerializer, UserProfileUnfollowSerializer
 
 
 class LikeViewSet(GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
@@ -90,11 +91,11 @@ class UserProfileViewSet(
 
         if self.action == "list":
             queryset = self.queryset.select_related("user").prefetch_related(
-                "posts__comments",
-                "posts__likes",
-                "sent_messages",
-                "following",
-                "followers",
+                # # "posts__comments",
+                # "post__likes",
+                # "sent_messages",
+                # "following",
+                # "followers",
             )
         elif self.action == "retrieve":
             queryset = self.queryset.select_related()
@@ -111,12 +112,16 @@ class UserProfileViewSet(
         return queryset.distinct()
 
     def get_serializer_class(self):
-        # if self.action == "list":
-        #     return UserProfileListSerializer
-        # if self.action == "retrieve":
-        #     return ProfileRetrieveSerializer
-        # if self.action == "upload_image":
-        #     return ProfileImageSerializer
+        if self.action == "list":
+            return UserProfileListSerializer
+        if self.action == "retrieve":
+            return UserProfileDetailSerializer
+        if self.action == "upload_image":
+            return UserProfileImageSerializer
+        if self.action == "follow":
+            return UserProfileFollowSerializer
+        if self.action == "unfollow":
+            return UserProfileUnfollowSerializer
         return UserProfileSerializer
 
     def perform_create(self, serializer):
@@ -137,48 +142,47 @@ class UserProfileViewSet(
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # @action(
-    #     methods=["POST"],
-    #     detail=True,
-    #     url_path="follow",
-    #     permission_classes=(IsAuthenticated,),
-    # )
-    # def follow(self, request, pk=None):
-    #     profile_to_follow = self.get_object()
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="follow",
+        # permission_classes=(IsAuthenticated,),
+    )
+    def follow(self, request, pk=None):
+        profile_to_follow = self.get_object()
 
-    #     serializer = ProfileFollowSerializer(
-    #         data={"profile_to_follow": profile_to_follow.id},
-    #         context={"request": request},
-    #     )
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
+        serializer = self.get_serializer(
+            data={"profile_to_follow": profile_to_follow.id},
+            context={"request": request},
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-    #     return Response(
-    #         {"detail": f"Successfully followed {profile_to_follow.nickname}"},
-    #         status=status.HTTP_200_OK,
-    #     )
+        return Response(
+            f"Successfully followed {profile_to_follow.nickname}",
+            status=status.HTTP_200_OK,
+        )
 
-    # @action(
-    #     methods=["POST"],
-    #     detail=True,
-    #     url_path="unfollow",
-    #     permission_classes=(IsAuthenticated,),
-    # )
-    # def unfollow(self, request, pk=None):
-    #     profile_to_unfollow = self.get_object()
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="unfollow",
+        # permission_classes=(IsAuthenticated,),
+    )
+    def unfollow(self, request, pk=None):
+        profile_to_unfollow = self.get_object()
 
-    #     serializer = ProfileUnfollowSerializer(
-    #         data={"profile_to_unfollow": profile_to_unfollow.id},
-    #         context={"request": request},
-    #     )
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
+        serializer = self.get_serializer(
+            data={"profile_to_unfollow": profile_to_unfollow.id},
+            context={"request": request},
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-    #     return Response(
-    #         {"detail": f"Successfully unfollowed "
-    #                    f"{profile_to_unfollow.nickname}"},
-    #         status=status.HTTP_200_OK,
-    #     )
+        return Response(
+           f"Successfully unfollowed: {profile_to_unfollow.nickname}",
+            status=status.HTTP_200_OK,
+        )
 
     # @extend_schema(
     #     parameters=[
