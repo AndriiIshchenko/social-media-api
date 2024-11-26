@@ -61,7 +61,7 @@ class UserProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     following = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
+        "self",
         related_name="followers",
         blank=True,
         symmetrical=False,
