@@ -6,36 +6,6 @@ from django.conf import settings
 from django.db import models
 
 
-class Post(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
-class Like(models.Model):
-    class LikeChoices(models.TextChoices):
-        NOTHING = "nothing"
-        LIKE = "like"
-        DISLIKE = "dislike"
-
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="likes",
-        blank=True,
-        null=True,
-    )
-    post = models.ForeignKey(
-        Post, on_delete=models.CASCADE, related_name="likes", blank=True, null=True
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    like_type = models.CharField(
-        max_length=10, choices=LikeChoices, default=LikeChoices.NOTHING
-    )
-
-
 def profile_image_path(instance, filename) -> str:
     _, extention = os.path.splitext(filename)
     filename = f"{slugify(instance.nickname)}-{uuid.uuid4()}{extention}"
@@ -63,6 +33,13 @@ class UserProfile(models.Model):
         return self.nickname
 
 
+class Post(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="posts")
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
 class Comment(models.Model):
     user_profile = models.ForeignKey(
         UserProfile, on_delete=models.CASCADE, related_name="comments"
@@ -71,3 +48,26 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class Like(models.Model):
+    class LikeChoices(models.TextChoices):
+        NOTHING = "nothing"
+        LIKE = "like"
+        DISLIKE = "dislike"
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="likes",
+        blank=True,
+        null=True,
+    )
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name="likes", blank=True, null=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    like_type = models.CharField(
+        max_length=10, choices=LikeChoices, default=LikeChoices.NOTHING
+    )
