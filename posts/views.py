@@ -90,12 +90,12 @@ class UserProfileViewSet(
         last_name = self.request.query_params.get("last_name")
 
         if self.action == "list":
-            queryset = self.queryset.select_related("user").prefetch_related(
+            queryset = self.queryset.select_related("user", ).prefetch_related(
                 # # "posts__comments",
-                # "post__likes",
                 # "sent_messages",
-                # "following",
-                # "followers",
+                "user__likes__post",
+                "following",
+                "followers",
             )
         elif self.action == "retrieve":
             queryset = self.queryset.select_related()
