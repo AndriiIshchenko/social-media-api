@@ -7,8 +7,19 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 
-from posts.models import Like, Post, UserProfile
-from posts.serializers import LikeSerializer, PostDetailSerializer, PostSerializer, UserProfileDetailSerializer, UserProfileFollowSerializer, UserProfileImageSerializer, UserProfileListSerializer, UserProfileSerializer, UserProfileUnfollowSerializer
+from posts.models import Comment, Like, Post, UserProfile
+from posts.serializers import (
+    CommentSerializer,
+    LikeSerializer,
+    PostDetailSerializer,
+    PostSerializer,
+    UserProfileDetailSerializer,
+    UserProfileFollowSerializer,
+    UserProfileImageSerializer,
+    UserProfileListSerializer,
+    UserProfileSerializer,
+    UserProfileUnfollowSerializer,
+)
 
 
 class LikeViewSet(GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
@@ -34,6 +45,8 @@ class PostViewSet(
             return PostDetailSerializer
         if self.action == "like":
             return LikeSerializer
+        if self.action == "comment":
+            return CommentSerializer
         return PostSerializer
 
     @action(detail=True, methods=["post"])
@@ -49,6 +62,20 @@ class PostViewSet(
             like.save()
 
         serializer = self.get_serializer(like)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=["post"])
+    def comment(self, request, pk=None):
+        post = self.get_object()
+        author = request.user
+        comment = Comment.objects.create(
+            user_profile=author.profile,
+            post=post,
+            content=request.POST.get("content"),
+        )
+        comment.save()
+
+        serializer = self.get_serializer(comment)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
@@ -67,8 +94,6 @@ class PostViewSet(
 
     def perform_update(self, serializer):
         serializer.save()
-
-
 
 
 class UserProfileViewSet(
@@ -90,7 +115,9 @@ class UserProfileViewSet(
         last_name = self.request.query_params.get("last_name")
 
         if self.action == "list":
-            queryset = self.queryset.select_related("user", ).prefetch_related(
+            queryset = self.queryset.select_related(
+                "user",
+            ).prefetch_related(
                 # # "posts__comments",
                 # "sent_messages",
                 "user__likes__post",
@@ -180,7 +207,7 @@ class UserProfileViewSet(
         serializer.save()
 
         return Response(
-           f"Successfully unfollowed: {profile_to_unfollow.nickname}",
+            f"Successfully unfollowed: {profile_to_unfollow.nickname}",
             status=status.HTTP_200_OK,
         )
 
@@ -206,6 +233,18 @@ class UserProfileViewSet(
     #         ),
     #     ]
     # )
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+    # def list(self, request, *args, **kwargs):
+    #     return super().list(request, *args, **kwargs)
 
+
+class CommentViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    GenericViewSet,
+):
+
+    queryset = Comment.objects.all().select_related("user_profile", "post")
+    serializer_class = CommentSerializer
+    # permission_classes = (OwnerOrReadOnlyProfile,)

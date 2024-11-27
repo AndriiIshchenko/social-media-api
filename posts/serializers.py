@@ -2,7 +2,7 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from posts.models import Like, Post, UserProfile
+from posts.models import Comment, Like, Post, UserProfile
 
 
 class LikeSerializer(serializers.ModelSerializer):
@@ -156,3 +156,9 @@ class UserProfileUnfollowSerializer(serializers.ModelSerializer):
         profile_to_unfollow = self.validated_data["profile_to_unfollow"]
         user_profile.following.remove(profile_to_unfollow)
         return profile_to_unfollow
+    
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ("id", "user_profile", "post", "content", "created_at")
