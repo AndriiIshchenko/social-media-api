@@ -30,18 +30,10 @@ class Like(models.Model):
         Post, on_delete=models.CASCADE, related_name="likes", blank=True, null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
-   
-    like_type = models.CharField(max_length=10, choices=LikeChoices, default=LikeChoices.NOTHING)
 
-
-# class Comment(models.Model):
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-#     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
-#     content = models.TextField()
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-#     likes = models.ManyToManyField(Likes, related_name="comments")
-#     replies = models.ManyToManyField("self", related_name="comment_replies")
+    like_type = models.CharField(
+        max_length=10, choices=LikeChoices, default=LikeChoices.NOTHING
+    )
 
 
 def profile_image_path(instance, filename) -> str:
@@ -69,3 +61,13 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.nickname
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(
+        UserProfile, on_delete=models.CASCADE, related_name="comments"
+    )
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
