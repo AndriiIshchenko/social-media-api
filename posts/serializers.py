@@ -74,6 +74,7 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(source="user.last_name")
     following = serializers.SerializerMethodField()
     followers = serializers.SerializerMethodField()
+    posts = PostSerializer(many=True)
 
     class Meta:
         model = UserProfile
@@ -87,6 +88,7 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
             "birth_date",
             "following",
             "followers",
+            "posts"
         ]
 
     def get_following(self, obj):
