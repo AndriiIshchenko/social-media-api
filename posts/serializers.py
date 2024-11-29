@@ -19,6 +19,7 @@ class CommentForPostSerializer(serializers.ModelSerializer):
     user_profile = serializers.SlugRelatedField(
         many=False, read_only=True, slug_field="nickname"
     )
+
     class Meta:
         model = Comment
         fields = ("id", "user_profile", "content", "created_at")
@@ -124,6 +125,8 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
     followers = serializers.SerializerMethodField()
     posts = serializers.SerializerMethodField()
     commented_posts = serializers.SerializerMethodField()
+    liked_posts = serializers.SerializerMethodField()
+    disliked_posts = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
@@ -137,6 +140,8 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
             "followers",
             "posts",
             "commented_posts",
+            "liked_posts",
+            "disliked_posts",
         ]
 
     def get_following(self, obj):
@@ -146,13 +151,32 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
         return [followers.nickname for followers in obj.followers.all()]
 
     def get_posts(self, obj):
-        return (f"'{post.content[:60]} ...' posted at {post.created_at} "  for post in obj.posts.all())
+        return (
+            f"'{post.content[:60]} ...' posted at {post.created_at} "
+            for post in obj.posts.all()
+        )
 
     def get_commented_posts(self, obj):
         return (
             f"{comment.user_profile.nickname} posted: '{comment.post.content[0:30]}'."
             f"Your comment: '{comment.content[:30]}'"
             for comment in obj.comments.all()
+        )
+
+    def get_liked_posts(self, obj):
+        return (
+            f"{like.post.user_profile.nickname} posted: '{like.post.content[:60]}'."
+            # f"{like.post.nickname}: '{like.post.content[:60]}...'"
+            for like in obj.user.likes.all()
+            if like.like_type == "like"
+        )
+
+    def get_disliked_posts(self, obj):
+        return (
+            f"{like.post.user_profile.nickname} posted: '{like.post.content[:60]}'."
+            # f"{like.post.nickname}: '{like.post.content[:60]}...'"
+            for like in obj.user.likes.all()
+            if like.like_type == "dislike"
         )
 
 
