@@ -1,6 +1,4 @@
-from django.db import transaction
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
 from posts.models import Comment, Like, Post, UserProfile
 
@@ -9,6 +7,12 @@ class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = ("like_type",)
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ("id", "user_profile", "post", "content", "created_at")
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -26,28 +30,38 @@ class PostSerializer(serializers.ModelSerializer):
             "likes_amount",
             "dislikes_amount",
         )
+        read_only_fields = ("id", "user_profile")
 
 class PostListSerializer(serializers.ModelSerializer):
     likes_amount = serializers.IntegerField(read_only=True)
     dislikes_amount = serializers.IntegerField(read_only=True)
-    comments_amount = serializers.IntegerField(read_only=True)
+    comments_amount = serializers.SerializerMethodField()
+    short_content = serializers.SerializerMethodField()
+    user_profile = serializers.SlugRelatedField(many=False, read_only=True, slug_field="nickname")
 
     class Meta:
         model = Post
         fields = (
             "id",
-            "content",
             "user_profile",
             "created_at",
             "updated_at",
             "likes_amount",
             "dislikes_amount",
+            "comments_amount",
+            "short_content"
         )
 
+    def get_comments_amount(self, obj):
+        return obj.comments.count()
+
+    def get_short_content(self, obj):
+        return f"{obj.content[:60]} ..."
 
 class PostDetailSerializer(serializers.ModelSerializer):
     likes_amount = serializers.IntegerField(read_only=True)
     dislikes_amount = serializers.IntegerField(read_only=True)
+    comments = CommentSerializer(read_only=True, many=True)
 
     class Meta:
         model = Post
@@ -59,9 +73,8 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "content",
             "likes_amount",
             "dislikes_amount",
+            "comments",
         )
-
-
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -85,9 +98,10 @@ class UserProfileListSerializer(serializers.ModelSerializer):
 
     def get_followers(self, obj):
         return obj.followers.count()
-    
+
     def get_posts(self, obj):
         return obj.posts.count()
+
 
 class UserProfileDetailSerializer(serializers.ModelSerializer):
     following = serializers.SerializerMethodField()
@@ -106,7 +120,7 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
             "following",
             "followers",
             "posts",
-            "commented_posts"
+            "commented_posts",
         ]
 
     def get_following(self, obj):
@@ -116,14 +130,15 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
         return [followers.nickname for followers in obj.followers.all()]
 
     def get_posts(self, obj):
-        return(post.content[:30] for post in obj.posts.all())
-    
+        return (post.content[:30] for post in obj.posts.all())
+
     def get_commented_posts(self, obj):
-        return(
+        return (
             f"{comment.user_profile.nickname} posted: '{comment.post.content[0:30]}'."
-            f"Your comment: '{comment.content[:30]}'"  
+            f"Your comment: '{comment.content[:30]}'"
             for comment in obj.comments.all()
-            )
+        )
+
 
 class UserProfileImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -174,9 +189,7 @@ class UserProfileUnfollowSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("You can't unfollow yourself!")
 
         if profile_to_unfollow not in user_profile.following.all():
-            raise serializers.ValidationError(
-                "You are not following this user!"
-            )
+            raise serializers.ValidationError("You are not following this user!")
 
         return profile_to_unfollow
 
@@ -185,9 +198,3 @@ class UserProfileUnfollowSerializer(serializers.ModelSerializer):
         profile_to_unfollow = self.validated_data["profile_to_unfollow"]
         user_profile.following.remove(profile_to_unfollow)
         return profile_to_unfollow
-    
-
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ("id", "user_profile", "post", "content", "created_at")

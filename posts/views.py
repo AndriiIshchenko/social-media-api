@@ -1,6 +1,4 @@
-from django.shortcuts import render
-
-from django.db.models import F, Q, Count
+from django.db.models import Q, Count
 from rest_framework import mixins, status
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
@@ -12,6 +10,7 @@ from posts.serializers import (
     CommentSerializer,
     LikeSerializer,
     PostDetailSerializer,
+    PostListSerializer,
     PostSerializer,
     UserProfileDetailSerializer,
     UserProfileFollowSerializer,
@@ -41,6 +40,8 @@ class PostViewSet(
     serializer_class = PostSerializer
 
     def get_serializer_class(self):
+        if self.action == "list":
+            return PostListSerializer
         if self.action == "retrieve":
             return PostDetailSerializer
         if self.action == "like":
