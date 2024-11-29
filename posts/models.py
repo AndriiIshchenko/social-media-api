@@ -35,9 +35,12 @@ class UserProfile(models.Model):
 
 class Post(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="posts")
-    content = models.TextField()
+    content = models.TextField(blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user_profile}: {self.content[:30]}"
 
 
 class Comment(models.Model):
