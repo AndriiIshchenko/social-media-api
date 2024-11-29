@@ -105,18 +105,7 @@ class UserProfileViewSet(
     mixins.DestroyModelMixin,
     GenericViewSet,
 ):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
-    # permission_classes = (OwnerOrReadOnlyProfile,)
-
-    def get_queryset(self):
-        """Retrieve the user's profiles with filter"""
-        nickname = self.request.query_params.get("nickname")
-        first_name = self.request.query_params.get("first_name")
-        last_name = self.request.query_params.get("last_name")
-
-        if self.action == "list":
-            queryset = self.queryset.select_related(
+    queryset = UserProfile.objects.all().select_related(
                 "user",
             ).prefetch_related(
                 "posts__comments",
@@ -124,18 +113,20 @@ class UserProfileViewSet(
                 "following",
                 "followers",
             )
-        elif self.action == "retrieve":
-            queryset = self.queryset.select_related()
-        else:
+    serializer_class = UserProfileSerializer
+    # permission_classes = (OwnerOrReadOnlyProfile,)
+
+    def get_queryset(self):
+        """Retrieve the user's profiles with filter"""
+        nickname = self.request.query_params.get("nickname")
+
+        if self.action == "list":
             queryset = self.queryset
+        
 
         if nickname:
             queryset = queryset.filter(nickname__icontains=nickname)
-        if first_name:
-            queryset = queryset.filter(user__first_name__icontains=first_name)
-        if last_name:
-            queryset = queryset.filter(user__last_name__icontains=last_name)
-
+     
         return queryset.distinct()
 
     def get_serializer_class(self):
