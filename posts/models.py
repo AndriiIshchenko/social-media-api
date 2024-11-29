@@ -6,6 +6,10 @@ from django.conf import settings
 from django.db import models
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+
 def profile_image_path(instance, filename) -> str:
     _, extention = os.path.splitext(filename)
     filename = f"{slugify(instance.nickname)}-{uuid.uuid4()}{extention}"
@@ -45,6 +49,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(blank=True, null=True, upload_to=post_image_path)
+    tags = models.ManyToManyField(Tag, blank=True, null=True, related_name="tags")
 
     def __str__(self):
         return f"{self.user_profile}"
