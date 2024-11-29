@@ -33,11 +33,18 @@ class UserProfile(models.Model):
         return self.nickname
 
 
+def post_image_path(instance, filename) -> str:
+    _, extention = os.path.splitext(filename)
+    filename = f"{slugify(instance.user_profile.nickname)}-{uuid.uuid4()}{extention}"
+    return os.path.join("uploads/post/", filename)
+
+
 class Post(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="posts")
     content = models.TextField(blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    image = models.ImageField(blank=True, null=True, upload_to=post_image_path)
 
     def __str__(self):
         return f"{self.user_profile}"

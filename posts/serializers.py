@@ -43,6 +43,11 @@ class PostSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "user_profile")
 
 
+class PostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ["id", "image"]
+
 class PostListSerializer(serializers.ModelSerializer):
     likes_amount = serializers.IntegerField(read_only=True)
     dislikes_amount = serializers.IntegerField(read_only=True)
@@ -63,6 +68,7 @@ class PostListSerializer(serializers.ModelSerializer):
             "dislikes_amount",
             "comments_amount",
             "short_content",
+            "image"
         )
 
     def get_comments_amount(self, obj):
@@ -91,6 +97,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "likes_amount",
             "dislikes_amount",
             "comments",
+            "image"
         )
 
 
