@@ -27,6 +27,23 @@ class PostSerializer(serializers.ModelSerializer):
             "dislikes_amount",
         )
 
+class PostListSerializer(serializers.ModelSerializer):
+    likes_amount = serializers.IntegerField(read_only=True)
+    dislikes_amount = serializers.IntegerField(read_only=True)
+    comments_amount = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Post
+        fields = (
+            "id",
+            "content",
+            "user_profile",
+            "created_at",
+            "updated_at",
+            "likes_amount",
+            "dislikes_amount",
+        )
+
 
 class PostDetailSerializer(serializers.ModelSerializer):
     likes_amount = serializers.IntegerField(read_only=True)
@@ -57,38 +74,39 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class UserProfileListSerializer(serializers.ModelSerializer):
     following = serializers.SerializerMethodField()
     followers = serializers.SerializerMethodField()
+    posts = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
-        fields = ("id", "nickname", "bio", "photo", "following", "followers")
+        fields = ("id", "nickname", "bio", "photo", "following", "followers", "posts")
 
     def get_following(self, obj):
         return obj.following.count()
 
     def get_followers(self, obj):
         return obj.followers.count()
-
+    
+    def get_posts(self, obj):
+        return obj.posts.count()
 
 class UserProfileDetailSerializer(serializers.ModelSerializer):
-    first_name = serializers.CharField(source="user.first_name")
-    last_name = serializers.CharField(source="user.last_name")
     following = serializers.SerializerMethodField()
     followers = serializers.SerializerMethodField()
-    posts = PostSerializer(many=True)
+    posts = serializers.SerializerMethodField()
+    commented_posts = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
         fields = [
             "id",
             "nickname",
-            "first_name",
-            "last_name",
             "bio",
             "photo",
             "birth_date",
             "following",
             "followers",
-            "posts"
+            "posts",
+            "commented_posts"
         ]
 
     def get_following(self, obj):
@@ -97,6 +115,15 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
     def get_followers(self, obj):
         return [followers.nickname for followers in obj.followers.all()]
 
+    def get_posts(self, obj):
+        return(post.content[:30] for post in obj.posts.all())
+    
+    def get_commented_posts(self, obj):
+        return(
+            f"{comment.user_profile.nickname} posted: '{comment.post.content[0:30]}'."
+            f"Your comment: '{comment.content[:30]}'"  
+            for comment in obj.comments.all()
+            )
 
 class UserProfileImageSerializer(serializers.ModelSerializer):
     class Meta:

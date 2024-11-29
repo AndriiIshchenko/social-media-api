@@ -40,7 +40,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user_profile}: {self.content[:30]}"
+        return f"{self.user_profile}"
 
 
 class Comment(models.Model):

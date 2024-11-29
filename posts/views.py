@@ -118,8 +118,7 @@ class UserProfileViewSet(
             queryset = self.queryset.select_related(
                 "user",
             ).prefetch_related(
-                # # "posts__comments",
-                # "sent_messages",
+                "posts__comments",
                 "user__likes__post",
                 "following",
                 "followers",
