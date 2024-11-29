@@ -20,7 +20,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "content",
-            "user",
+            "user_profile",
             "created_at",
             "updated_at",
             "likes_amount",
@@ -36,7 +36,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
         model = Post
         fields = (
             "id",
-            "user",
+            "user_profile",
             "created_at",
             "updated_at",
             "content",

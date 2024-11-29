@@ -34,7 +34,7 @@ class UserProfile(models.Model):
 
 
 class Post(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="posts")
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="posts")
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
