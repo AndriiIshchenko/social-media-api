@@ -12,7 +12,16 @@ class LikeSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ("id", "user_profile", "post", "content", "created_at")
+        fields = ("id", "content")
+
+
+class CommentForPostSerializer(serializers.ModelSerializer):
+    user_profile = serializers.SlugRelatedField(
+        many=False, read_only=True, slug_field="nickname"
+    )
+    class Meta:
+        model = Comment
+        fields = ("id", "user_profile", "content", "created_at")
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -32,12 +41,15 @@ class PostSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("id", "user_profile")
 
+
 class PostListSerializer(serializers.ModelSerializer):
     likes_amount = serializers.IntegerField(read_only=True)
     dislikes_amount = serializers.IntegerField(read_only=True)
     comments_amount = serializers.SerializerMethodField()
     short_content = serializers.SerializerMethodField()
-    user_profile = serializers.SlugRelatedField(many=False, read_only=True, slug_field="nickname")
+    user_profile = serializers.SlugRelatedField(
+        many=False, read_only=True, slug_field="nickname"
+    )
 
     class Meta:
         model = Post
@@ -49,7 +61,7 @@ class PostListSerializer(serializers.ModelSerializer):
             "likes_amount",
             "dislikes_amount",
             "comments_amount",
-            "short_content"
+            "short_content",
         )
 
     def get_comments_amount(self, obj):
@@ -58,10 +70,14 @@ class PostListSerializer(serializers.ModelSerializer):
     def get_short_content(self, obj):
         return f"{obj.content[:60]} ..."
 
+
 class PostDetailSerializer(serializers.ModelSerializer):
     likes_amount = serializers.IntegerField(read_only=True)
     dislikes_amount = serializers.IntegerField(read_only=True)
-    comments = CommentSerializer(read_only=True, many=True)
+    comments = CommentForPostSerializer(read_only=True, many=True)
+    user_profile = serializers.SlugRelatedField(
+        many=False, read_only=True, slug_field="nickname"
+    )
 
     class Meta:
         model = Post
@@ -130,7 +146,7 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
         return [followers.nickname for followers in obj.followers.all()]
 
     def get_posts(self, obj):
-        return (post.content[:30] for post in obj.posts.all())
+        return (f"'{post.content[:60]} ...' posted at {post.created_at} "  for post in obj.posts.all())
 
     def get_commented_posts(self, obj):
         return (
