@@ -5,6 +5,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
+
 from posts.models import Comment, Like, Post, Tag, UserProfile
 from posts.serializers import (
     CommentSerializer,
@@ -84,6 +87,17 @@ class PostViewSet(
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="like_type",
+                description="Choose 'like', 'dislike' or 'nothing' "
+                            "to like or update (ex. ?like_type=nothing)",
+                required=False,
+                type=OpenApiTypes.STR,
+            )
+        ]
+    )
     @action(detail=True, methods=["post"])
     def like(self, request, pk=None):
         post = self.get_object()
@@ -106,9 +120,9 @@ class PostViewSet(
         comment = Comment.objects.create(
             user_profile=author.profile,
             post=post,
-            content=request.POST.get("content"),
+            content=request.data.get("content"),
         )
-        comment.save()
+        # comment.save()
 
         serializer = self.get_serializer(comment)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -120,25 +134,40 @@ class PostViewSet(
         serializer.is_valid(raise_exception=True)
 
         if partial:
-            # Handle PATCH request
             tags_data = request.data.get("tags")
             if tags_data is not None:
                 for tag_data in tags_data:
                     tag, created = Tag.objects.get_or_create(name=tag_data["name"])
                     instance.tags.add(tag)
         else:
-            # Handle PUT request
             self.perform_update(serializer)
 
         if getattr(instance, "_prefetched_objects_cache", None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data)
 
     def perform_update(self, serializer):
         serializer.save()
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="nickname",
+                description="Filter by nickname (ex. ?nickname=alice)",
+                required=False,
+                type=OpenApiTypes.STR,
+            ),
+            OpenApiParameter(
+                name="tag",
+                description="Filter by tags (ex.?tag=Alice&tag=wonderland)",
+                required=False,
+                type=OpenApiTypes.STR,
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class UserProfileViewSet(
@@ -247,30 +276,18 @@ class UserProfileViewSet(
             status=status.HTTP_200_OK,
         )
 
-    # @extend_schema(
-    #     parameters=[
-    #         OpenApiParameter(
-    #             name="nickname",
-    #             description="Filter by nickname",
-    #             required=False,
-    #             type=str,
-    #         ),
-    #         OpenApiParameter(
-    #             name="first_name",
-    #             description="Filter by first name",
-    #             required=False,
-    #             type=str,
-    #         ),
-    #         OpenApiParameter(
-    #             name="last_name",
-    #             description="Filter by last name",
-    #             required=False,
-    #             type=str,
-    #         ),
-    #     ]
-    # )
-    # def list(self, request, *args, **kwargs):
-    #     return super().list(request, *args, **kwargs)
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="nickname",
+                description="Filter by nickname (ex. ?nickname=alice)",
+                required=False,
+                type=OpenApiTypes.STR,
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class CommentViewSet(

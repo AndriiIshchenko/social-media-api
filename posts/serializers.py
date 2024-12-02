@@ -1,3 +1,4 @@
+from typing import Generator, List
 from rest_framework import serializers
 
 from posts.models import Comment, Like, Post, Tag, UserProfile
@@ -62,15 +63,13 @@ class PostSerializer(serializers.ModelSerializer):
         tags_data = validated_data.pop("tags", None)
         instance = super().update(instance, validated_data)
 
-        if tags_data is not None:  # Only update tags if they were provided in the request
+        if tags_data is not None:  
             if self.partial:
-                # For PATCH requests, we'll add new tags without clearing existing ones
                 for tag_data in tags_data:
                     tag, _ = Tag.objects.get_or_create(**tag_data)
                     if tag not in instance.tags.all():
                         instance.tags.add(tag)
             else:
-                # For PUT requests, we'll replace all tags
                 instance.tags.clear()
                 for tag_data in tags_data:
                     tag, _ = Tag.objects.get_or_create(**tag_data)
@@ -110,10 +109,10 @@ class PostListSerializer(serializers.ModelSerializer):
             "tags",
         )
 
-    def get_comments_amount(self, obj):
+    def get_comments_amount(self, obj) -> int:
         return obj.comments.count()
 
-    def get_short_content(self, obj):
+    def get_short_content(self, obj) -> str:
         return f"{obj.content[:60]} ..."
 
 
@@ -158,13 +157,13 @@ class UserProfileListSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ("id", "nickname", "bio", "photo", "following", "followers", "posts")
 
-    def get_following(self, obj):
+    def get_following(self, obj) -> int:
         return obj.following.count()
 
-    def get_followers(self, obj):
+    def get_followers(self, obj)-> int:
         return obj.followers.count()
 
-    def get_posts(self, obj):
+    def get_posts(self, obj) -> int:
         return obj.posts.count()
 
 
@@ -192,40 +191,40 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
             "disliked_posts",
         ]
 
-    def get_following(self, obj):
+    def get_following(self, obj) -> List[str]:
         return [following.nickname for following in obj.following.all()]
 
-    def get_followers(self, obj):
+    def get_followers(self, obj) -> List[str]:
         return [followers.nickname for followers in obj.followers.all()]
 
-    def get_posts(self, obj):
-        return (
+    def get_posts(self, obj) -> List[str]:
+        return [
             f"'{post.content[:60]} ...' posted at {post.created_at} "
             for post in obj.posts.all()
-        )
+        ]
 
-    def get_commented_posts(self, obj):
-        return (
+    def get_commented_posts(self, obj) -> List[str]:
+        return [
             f"{comment.user_profile.nickname} posted: '{comment.post.content[0:30]}'."
             f"Your comment: '{comment.content[:30]}'"
             for comment in obj.comments.all()
-        )
+        ]
 
-    def get_liked_posts(self, obj):
-        return (
+    def get_liked_posts(self, obj) -> List[str]:
+        return [
             f"{like.post.user_profile.nickname} posted: '{like.post.content[:60]}'."
             # f"{like.post.nickname}: '{like.post.content[:60]}...'"
             for like in obj.user.likes.all()
             if like.like_type == "like"
-        )
+        ]
 
-    def get_disliked_posts(self, obj):
-        return (
+    def get_disliked_posts(self, obj) -> List[str]:
+        return [
             f"{like.post.user_profile.nickname} posted: '{like.post.content[:60]}'."
             # f"{like.post.nickname}: '{like.post.content[:60]}...'"
             for like in obj.user.likes.all()
             if like.like_type == "dislike"
-        )
+        ]
 
 
 class UserProfileImageSerializer(serializers.ModelSerializer):
