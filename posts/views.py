@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 
-from posts.models import Comment, Like, Post, UserProfile
+from posts.models import Comment, Like, Post, Tag, UserProfile
 from posts.serializers import (
     CommentSerializer,
     LikeSerializer,
@@ -40,6 +40,24 @@ class PostViewSet(
     )
     serializer_class = PostSerializer
 
+    def get_queryset(self):
+        """Retrieve posts with filters"""
+
+        queryset = self.queryset
+        nickname = self.request.query_params.get("nickname")
+        tags = self.request.query_params.getlist("tag")
+
+        if nickname:
+            queryset = queryset.filter(user_profile__nickname__icontains=nickname)
+
+        if tags:
+            tag_query = Q()
+            for tag in tags:
+                tag_query |= Q(tags__name__iexact=tag)
+            queryset = queryset.filter(tag_query)
+
+        return queryset
+
     def get_serializer_class(self):
         if self.action == "list":
             return PostListSerializer
@@ -65,7 +83,7 @@ class PostViewSet(
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     @action(detail=True, methods=["post"])
     def like(self, request, pk=None):
         post = self.get_object()
@@ -100,7 +118,17 @@ class PostViewSet(
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+
+        if partial:
+            # Handle PATCH request
+            tags_data = request.data.get("tags")
+            if tags_data is not None:
+                for tag_data in tags_data:
+                    tag, created = Tag.objects.get_or_create(name=tag_data["name"])
+                    instance.tags.add(tag)
+        else:
+            # Handle PUT request
+            self.perform_update(serializer)
 
         if getattr(instance, "_prefetched_objects_cache", None):
             # If 'prefetch_related' has been applied to a queryset, we need to
@@ -121,28 +149,29 @@ class UserProfileViewSet(
     mixins.DestroyModelMixin,
     GenericViewSet,
 ):
-    queryset = UserProfile.objects.all().select_related(
-                "user",
-            ).prefetch_related(
-                "posts__comments",
-                "user__likes__post",
-                "following",
-                "followers",
-            )
+    queryset = (
+        UserProfile.objects.all()
+        .select_related(
+            "user",
+        )
+        .prefetch_related(
+            "posts__comments",
+            "user__likes__post",
+            "following",
+            "followers",
+        )
+    )
     serializer_class = UserProfileSerializer
     # permission_classes = (OwnerOrReadOnlyProfile,)
 
     def get_queryset(self):
         """Retrieve the user's profiles with filter"""
+        queryset = self.queryset
+
         nickname = self.request.query_params.get("nickname")
-
-        if self.action == "list":
-            queryset = self.queryset
-        
-
         if nickname:
             queryset = queryset.filter(nickname__icontains=nickname)
-     
+
         return queryset.distinct()
 
     def get_serializer_class(self):

@@ -1,6 +1,12 @@
 from rest_framework import serializers
 
-from posts.models import Comment, Like, Post, UserProfile
+from posts.models import Comment, Like, Post, Tag, UserProfile
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ["id", "name"]
 
 
 class LikeSerializer(serializers.ModelSerializer):
@@ -28,6 +34,7 @@ class CommentForPostSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     likes_amount = serializers.IntegerField(read_only=True)
     dislikes_amount = serializers.IntegerField(read_only=True)
+    tags = TagSerializer(many=True, required=False)
 
     class Meta:
         model = Post
@@ -39,14 +46,44 @@ class PostSerializer(serializers.ModelSerializer):
             "updated_at",
             "likes_amount",
             "dislikes_amount",
+            "tags",
         )
         read_only_fields = ("id", "user_profile")
+
+    def create(self, validated_data):
+        tags_data = validated_data.pop("tags", [])
+        post = Post.objects.create(**validated_data)
+        for tag_data in tags_data:
+            tag, _ = Tag.objects.get_or_create(**tag_data)
+            post.tags.add(tag)
+        return post
+
+    def update(self, instance, validated_data):
+        tags_data = validated_data.pop("tags", None)
+        instance = super().update(instance, validated_data)
+
+        if tags_data is not None:  # Only update tags if they were provided in the request
+            if self.partial:
+                # For PATCH requests, we'll add new tags without clearing existing ones
+                for tag_data in tags_data:
+                    tag, _ = Tag.objects.get_or_create(**tag_data)
+                    if tag not in instance.tags.all():
+                        instance.tags.add(tag)
+            else:
+                # For PUT requests, we'll replace all tags
+                instance.tags.clear()
+                for tag_data in tags_data:
+                    tag, _ = Tag.objects.get_or_create(**tag_data)
+                    instance.tags.add(tag)
+
+        return instance
 
 
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ["id", "image"]
+
 
 class PostListSerializer(serializers.ModelSerializer):
     likes_amount = serializers.IntegerField(read_only=True)
@@ -56,6 +93,7 @@ class PostListSerializer(serializers.ModelSerializer):
     user_profile = serializers.SlugRelatedField(
         many=False, read_only=True, slug_field="nickname"
     )
+    tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
 
     class Meta:
         model = Post
@@ -68,7 +106,8 @@ class PostListSerializer(serializers.ModelSerializer):
             "dislikes_amount",
             "comments_amount",
             "short_content",
-            "image"
+            "image",
+            "tags",
         )
 
     def get_comments_amount(self, obj):
@@ -85,6 +124,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
     user_profile = serializers.SlugRelatedField(
         many=False, read_only=True, slug_field="nickname"
     )
+    tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
 
     class Meta:
         model = Post
@@ -97,7 +137,8 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "likes_amount",
             "dislikes_amount",
             "comments",
-            "image"
+            "image",
+            "tags",
         )
 
 

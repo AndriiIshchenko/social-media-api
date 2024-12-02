@@ -11,6 +11,7 @@ router.register("posts", PostViewSet)
 router.register("profiles", UserProfileViewSet)
 router.register("comments", CommentViewSet)
 
+
 urlpatterns = [
     path("", include(router.urls)),
 ]
