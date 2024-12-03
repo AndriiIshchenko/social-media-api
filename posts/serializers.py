@@ -1,4 +1,4 @@
-from typing import Generator, List
+from typing import List
 from rest_framework import serializers
 
 from posts.models import Comment, Like, Post, Tag, UserProfile
@@ -49,7 +49,7 @@ class PostSerializer(serializers.ModelSerializer):
             "dislikes_amount",
             "tags",
         )
-        read_only_fields = ("id", "user_profile")
+        # read_only_fields = ("id", "user_profile")
 
     def create(self, validated_data):
         tags_data = validated_data.pop("tags", [])
@@ -63,7 +63,7 @@ class PostSerializer(serializers.ModelSerializer):
         tags_data = validated_data.pop("tags", None)
         instance = super().update(instance, validated_data)
 
-        if tags_data is not None:  
+        if tags_data is not None:
             if self.partial:
                 for tag_data in tags_data:
                     tag, _ = Tag.objects.get_or_create(**tag_data)
@@ -160,7 +160,7 @@ class UserProfileListSerializer(serializers.ModelSerializer):
     def get_following(self, obj) -> int:
         return obj.following.count()
 
-    def get_followers(self, obj)-> int:
+    def get_followers(self, obj) -> int:
         return obj.followers.count()
 
     def get_posts(self, obj) -> int:

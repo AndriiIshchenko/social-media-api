@@ -1,14 +1,22 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Count
 from rest_framework import mixins, status
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 
 from posts.models import Comment, Like, Post, Tag, UserProfile
+from posts.permissions import (
+    IsAuthenticatedReadOnly,
+    IsAuthenticatedWithProfile,
+    OwnerOrReadOnlyProfile,
+    PostOwner,
+)
 from posts.serializers import (
     CommentSerializer,
     LikeSerializer,
@@ -42,6 +50,28 @@ class PostViewSet(
         dislikes_amount=Count("likes", filter=Q(likes__like_type="dislike")),
     )
     serializer_class = PostSerializer
+    # permission_classes = (IsAuthenticatedWithProfile, PostOwner,)
+
+    def get_permissions(self):
+        def user_has_profile(user):
+            try:
+                return bool(user.profile)
+            except ObjectDoesNotExist:
+                return False
+
+        if user_has_profile(self.request.user):
+            self.permission_classes = (IsAuthenticatedWithProfile(),)
+        else:
+            self.permission_classes = (IsAuthenticatedReadOnly(),)
+
+        if user_has_profile(self.request.user) and (
+            self.action in ("update", "partial_update", "delete", "upload_image")
+        ):
+            self.permission_classes = (PostOwner(),)
+
+        if self.action == "like":
+            self.permission_classes = (IsAuthenticated(),)
+        return self.permission_classes
 
     def get_queryset(self):
         """Retrieve posts with filters"""
@@ -92,13 +122,17 @@ class PostViewSet(
             OpenApiParameter(
                 name="like_type",
                 description="Choose 'like', 'dislike' or 'nothing' "
-                            "to like or update (ex. ?like_type=nothing)",
+                "to like or update (ex. ?like_type=nothing)",
                 required=False,
                 type=OpenApiTypes.STR,
             )
         ]
     )
-    @action(detail=True, methods=["post"])
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="like",
+    )
     def like(self, request, pk=None):
         post = self.get_object()
         like, created = Like.objects.get_or_create(
@@ -113,7 +147,12 @@ class PostViewSet(
         serializer = self.get_serializer(like)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["post"])
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="comment",
+        permission_classes=(IsAuthenticatedWithProfile,),
+    )
     def comment(self, request, pk=None):
         post = self.get_object()
         author = request.user
@@ -137,7 +176,7 @@ class PostViewSet(
             tags_data = request.data.get("tags")
             if tags_data is not None:
                 for tag_data in tags_data:
-                    tag, created = Tag.objects.get_or_create(name=tag_data["name"])
+                    tag, _ = Tag.objects.get_or_create(name=tag_data["name"])
                     instance.tags.add(tag)
         else:
             self.perform_update(serializer)
@@ -148,6 +187,9 @@ class PostViewSet(
         return Response(serializer.data)
 
     def perform_update(self, serializer):
+        serializer.save()
+
+    def perform_create(self, serializer):
         serializer.save()
 
     @extend_schema(
@@ -191,7 +233,10 @@ class UserProfileViewSet(
         )
     )
     serializer_class = UserProfileSerializer
-    # permission_classes = (OwnerOrReadOnlyProfile,)
+    permission_classes = (
+        IsAuthenticatedWithProfile,
+        OwnerOrReadOnlyProfile,
+    )
 
     def get_queryset(self):
         """Retrieve the user's profiles with filter"""
