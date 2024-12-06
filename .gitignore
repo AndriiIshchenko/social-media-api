@@ -9,3 +9,9 @@ venv/
 **db.sqlite3
 .pylintrc
 media/
+.$social_media_db_diagram.drawio
+asdf.drawio
+db copy.sql
+db copy.sql
+db_shema.erd
+social_media_db_diagram.drawio

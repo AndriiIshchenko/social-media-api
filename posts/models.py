@@ -47,12 +47,15 @@ def post_image_path(instance, filename) -> str:
 
 
 class Post(models.Model):
-    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="posts")
+    user_profile = models.ForeignKey(
+        UserProfile, on_delete=models.CASCADE, related_name="posts"
+    )
     content = models.TextField(blank=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(blank=True, null=True, upload_to=post_image_path)
     tags = models.ManyToManyField(Tag, blank=True, null=True, related_name="tags")
+    scheduled_time = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.user_profile}"
