@@ -1,15 +1,15 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from posts.views import LikeViewSet, PostViewSet, UserProfileViewSet, CommentViewSet
+from posts.views import PostViewSet, UserProfileViewSet
 
 
 router = routers.DefaultRouter()
 
-router.register("likes", LikeViewSet)
+
 router.register("posts", PostViewSet)
 router.register("profiles", UserProfileViewSet)
-router.register("comments", CommentViewSet)
+
 
 
 urlpatterns = [
