@@ -1,0 +1,772 @@
+[
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2024-11-24T15:57:27.883",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "2",
+    "object_repr": "test1@test1.com",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2024-11-24T16:01:52.033",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "3",
+    "object_repr": "test.atest@testatest.com",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2024-11-24T16:03:28.592",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "4",
+    "object_repr": "test.btest@testatest.com",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2024-11-29T20:34:12.617",
+    "user": 1,
+    "content_type": 12,
+    "object_id": "1",
+    "object_repr": "Tag object (1)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2024-11-29T20:34:23.395",
+    "user": 1,
+    "content_type": 12,
+    "object_id": "2",
+    "object_repr": "Tag object (2)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2024-11-29T20:34:30.998",
+    "user": 1,
+    "content_type": 12,
+    "object_id": "3",
+    "object_repr": "Tag object (3)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 7,
+  "fields": {
+    "action_time": "2024-11-29T20:35:14.016",
+    "user": 1,
+    "content_type": 12,
+    "object_id": "4",
+    "object_repr": "Django",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 8,
+  "fields": {
+    "action_time": "2024-11-29T20:35:20.189",
+    "user": 1,
+    "content_type": 12,
+    "object_id": "5",
+    "object_repr": "Ai",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 9,
+  "fields": {
+    "action_time": "2024-11-29T20:35:42.531",
+    "user": 1,
+    "content_type": 12,
+    "object_id": "6",
+    "object_repr": "Luis",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 10,
+  "fields": {
+    "action_time": "2024-11-29T20:35:48.740",
+    "user": 1,
+    "content_type": 12,
+    "object_id": "7",
+    "object_repr": "Carol",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 11,
+  "fields": {
+    "action_time": "2024-11-29T20:48:59.207",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "4",
+    "object_repr": "testbbbb",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Tags\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2024-11-29T20:49:47.441",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "1",
+    "object_repr": "andrew234",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Tags\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 13,
+  "fields": {
+    "action_time": "2024-11-30T17:11:33.595",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "3",
+    "object_repr": "andrew234",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Tags\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 14,
+  "fields": {
+    "action_time": "2024-11-30T17:11:47.184",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "2",
+    "object_repr": "testbbbb",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Tags\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 15,
+  "fields": {
+    "action_time": "2024-11-30T17:11:56.342",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "1",
+    "object_repr": "andrew234",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Tags\"]}}]"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "dzu8e8e8uj4n4b55g08cdtfpw7g2t8nn",
+  "fields": {
+    "session_data": ".eJxVjMEOwiAQRP-FsyEsC0o8evcbyO4CUjU0Ke2p8d9tkx50jvPezKoiLXONS89THJK6KlCn345JXrntID2pPUYtY5ungfWu6IN2fR9Tft8O9--gUq_bGk1yxUu6OJcIrfcCbAAMG7Fnb23Aghx89iyWkAEBDRoh2QKhiPp8Ac-uN8I:1tEu76:gnMkvxOqUrx2vaXV5npd_46MEAZ2V6zVkQZ1-09ZepM",
+    "expire_date": "2024-12-07T19:40:08.496"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "qq8rax9kuf58k5ndrvibxm22m77exmdt",
+  "fields": {
+    "session_data": ".eJxVjMEOwiAQRP-FsyEsC0o8evcbyO4CUjU0Ke2p8d9tkx50jvPezKoiLXONS89THJK6KlCn345JXrntID2pPUYtY5ungfWu6IN2fR9Tft8O9--gUq_bGk1yxUu6OJcIrfcCbAAMG7Fnb23Aghx89iyWkAEBDRoh2QKhiPp8Ac-uN8I:1tEu3G:V0-MRzGz1p6BxaL3-L7fO9HnUaHv3JdvC10SC8cU7V8",
+    "expire_date": "2024-12-07T19:36:10.803"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "vlizladcerwp95nb1b2nt2vfev3du2yu",
+  "fields": {
+    "session_data": ".eJxVjMEOwiAQRP-FsyEsC0o8evcbyO4CUjU0Ke2p8d9tkx50jvPezKoiLXONS89THJK6KlCn345JXrntID2pPUYtY5ungfWu6IN2fR9Tft8O9--gUq_bGk1yxUu6OJcIrfcCbAAMG7Fnb23Aghx89iyWkAEBDRoh2QKhiPp8Ac-uN8I:1tH5oQ:YFiou8azQQMJnB-wXkyXwmv6aM-g8V-kh_fYg0T2K6k",
+    "expire_date": "2024-12-13T20:33:54.930"
+  }
+},
+{
+  "model": "user.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$870000$rLPeALoaYTUeRjM6mAlSWU$IBdXwmluw0XUoCIwy53tP+a2Kt4c2c9fYTA3oW+LVFo=",
+    "last_login": "2024-11-29T20:33:54.920",
+    "is_superuser": true,
+    "first_name": "",
+    "last_name": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2024-11-23T18:09:14.309",
+    "email": "andrew@andrew.com",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "user.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$870000$OiFrzBpkFFYDzYkjwODTTz$ypg2RZ+QzPtgte/beT7tDROMbrGPM1xS5D7CAuvuBYs=",
+    "last_login": null,
+    "is_superuser": false,
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-23T19:04:06.198",
+    "email": "test1@test1.com",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "user.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$870000$GGImeA2xk10h7Q6RYsvPPB$sbYWMNFVpGaMasDfouH3FPKS8duFSw69/QogINV3F8k=",
+    "last_login": null,
+    "is_superuser": false,
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-24T16:01:51.437",
+    "email": "test.atest@testatest.com",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "user.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$870000$iDpkXy36I8PAbhl0Zh3XH1$27Bx29yg7DAj/9lebfkXRb0T59PHIz77ag66AsfSLCo=",
+    "last_login": null,
+    "is_superuser": false,
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-24T16:03:28.002",
+    "email": "test.btest@testatest.com",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "user.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$870000$9fJd0zOBS0IFoeB1NPMVeE$1oeCZiMW7JG8BKg3ZMfCo4alzkTSr8C0V839Kx+VnNQ=",
+    "last_login": null,
+    "is_superuser": false,
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-12-02T12:16:17.661",
+    "email": "noprofile@test.com",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "posts.tag",
+  "pk": 1,
+  "fields": {
+    "name": "Alice"
+  }
+},
+{
+  "model": "posts.tag",
+  "pk": 2,
+  "fields": {
+    "name": "Wonderland"
+  }
+},
+{
+  "model": "posts.tag",
+  "pk": 3,
+  "fields": {
+    "name": "Python"
+  }
+},
+{
+  "model": "posts.tag",
+  "pk": 4,
+  "fields": {
+    "name": "Django"
+  }
+},
+{
+  "model": "posts.tag",
+  "pk": 5,
+  "fields": {
+    "name": "Ai"
+  }
+},
+{
+  "model": "posts.tag",
+  "pk": 6,
+  "fields": {
+    "name": "Luis"
+  }
+},
+{
+  "model": "posts.tag",
+  "pk": 7,
+  "fields": {
+    "name": "Carol"
+  }
+},
+{
+  "model": "posts.tag",
+  "pk": 8,
+  "fields": {
+    "name": "Rabbit"
+  }
+},
+{
+  "model": "posts.tag",
+  "pk": 9,
+  "fields": {
+    "name": "alice"
+  }
+},
+{
+  "model": "posts.tag",
+  "pk": 10,
+  "fields": {
+    "name": "rabbit"
+  }
+},
+{
+  "model": "posts.tag",
+  "pk": 11,
+  "fields": {
+    "name": "cat"
+  }
+},
+{
+  "model": "posts.userprofile",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "nickname": "andrew234",
+    "bio": "some bio",
+    "birth_date": "2024-11-07T18:14:00",
+    "photo": "",
+    "created_at": "2024-11-25T18:14:19.659",
+    "updated_at": "2024-11-25T18:14:19.659",
+    "following": [
+      2,
+      4
+    ]
+  }
+},
+{
+  "model": "posts.userprofile",
+  "pk": 2,
+  "fields": {
+    "user": 4,
+    "nickname": "testbbbb",
+    "bio": "Was born, lives",
+    "birth_date": "2024-11-13T18:14:00",
+    "photo": "uploads/profile/testbbbb-464365fc-e608-43c4-88ec-300fcefc26ad.png",
+    "created_at": "2024-11-25T18:15:36.285",
+    "updated_at": "2024-11-29T15:07:03.540",
+    "following": []
+  }
+},
+{
+  "model": "posts.userprofile",
+  "pk": 3,
+  "fields": {
+    "user": 3,
+    "nickname": "testaaaaa",
+    "bio": "some bio for aaaa",
+    "birth_date": "2024-11-01T18:49:00",
+    "photo": "",
+    "created_at": "2024-11-25T18:50:00.820",
+    "updated_at": "2024-11-25T18:50:00.820",
+    "following": [
+      4
+    ]
+  }
+},
+{
+  "model": "posts.userprofile",
+  "pk": 4,
+  "fields": {
+    "user": 2,
+    "nickname": "test11111",
+    "bio": "some bio for 11111",
+    "birth_date": "2024-11-10T21:51:00",
+    "photo": "",
+    "created_at": "2024-11-25T18:51:46.806",
+    "updated_at": "2024-11-25T18:51:46.807",
+    "following": [
+      1,
+      2,
+      3
+    ]
+  }
+},
+{
+  "model": "posts.post",
+  "pk": 1,
+  "fields": {
+    "user_profile": 1,
+    "content": "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, ‘Oh dear! Oh dear! I shall be late!’ (when she thought it over afterwards, it occurred to her that she ought to have wondered at this, but at the time it all seemed quite natural); but when the Rabbit actually took a watch out of its waistcoat-pocket, and looked at it, and then hurried on, Alice started to her feet, for it flashed across her mind that she had never before seen a rabbit with either a waistcoat-pocket, or a watch to take out of it, and burning with curiosity, she ran across the field after it,",
+    "created_at": "2024-11-23T19:02:13.313",
+    "updated_at": "2024-11-30T17:11:56.331",
+    "image": "uploads/post/andrew234-3eababef-3670-42ec-a7de-0025e8cb5420.png",
+    "scheduled_time": null,
+    "tags": [
+      4,
+      7
+    ]
+  }
+},
+{
+  "model": "posts.post",
+  "pk": 2,
+  "fields": {
+    "user_profile": 2,
+    "content": "Either the well was very deep, or she fell very slowly, for she had plenty of time as she went down to look about her and to wonder what was going to happen next. First, she tried to look down and make out what she was coming to, but it was too dark to see anything; then she looked at the sides of the well, and noticed that they were filled with cupboards and book-shelves; here and there she saw maps and pictures hung upon pegs. She took down a jar from one of the shelves as she passed; it was labelled ‘ORANGE MARMALADE’, but to her great disappointment it was empty: she did not like to drop the jar for fear of killing somebody, so managed to put it into one of the cupboards as she fell past it.",
+    "created_at": "2024-11-23T19:05:37.098",
+    "updated_at": "2024-12-03T20:53:00.862",
+    "image": "uploads/post/testbbbb-c32dd5be-33be-476f-b5ab-dd425d3c4cd0.png",
+    "scheduled_time": null,
+    "tags": [
+      7,
+      9
+    ]
+  }
+},
+{
+  "model": "posts.post",
+  "pk": 3,
+  "fields": {
+    "user_profile": 1,
+    "content": "testtttt 222222 333    In another moment down went Alice after it, never once considering how in the world she was to get out again.\r\nThe rabbit-hole went straight on like a tunnel for some way, and then dipped suddenly down, so suddenly that Alice had not a moment to think about stopping herself before she found herself falling down a very deep well.",
+    "created_at": "2024-11-23T19:05:44.616",
+    "updated_at": "2024-12-03T20:48:06.957",
+    "image": "",
+    "scheduled_time": null,
+    "tags": [
+      4,
+      9
+    ]
+  }
+},
+{
+  "model": "posts.post",
+  "pk": 4,
+  "fields": {
+    "user_profile": 2,
+    "content": "some content 555555666666666666666666666 788888",
+    "created_at": "2024-11-24T14:23:51.770",
+    "updated_at": "2024-12-03T21:25:27.764",
+    "image": "uploads/post/testbbbb-f2ca7bdb-84cc-4202-8e0f-c2568f33a431.png",
+    "scheduled_time": null,
+    "tags": [
+      9,
+      10,
+      11
+    ]
+  }
+},
+{
+  "model": "posts.post",
+  "pk": 5,
+  "fields": {
+    "user_profile": 1,
+    "content": "1111",
+    "created_at": "2024-12-03T20:25:28.188",
+    "updated_at": "2024-12-03T20:25:28.188",
+    "image": "",
+    "scheduled_time": null,
+    "tags": []
+  }
+},
+{
+  "model": "posts.comment",
+  "pk": 1,
+  "fields": {
+    "user_profile": 1,
+    "post": 4,
+    "content": "some content",
+    "created_at": "2024-11-27T19:40:17.553",
+    "updated_at": "2024-11-27T19:42:33.678"
+  }
+},
+{
+  "model": "posts.comment",
+  "pk": 2,
+  "fields": {
+    "user_profile": 2,
+    "post": 4,
+    "content": "some new comment",
+    "created_at": "2024-11-29T11:11:40.852",
+    "updated_at": "2024-11-29T11:11:40.861"
+  }
+},
+{
+  "model": "posts.comment",
+  "pk": 3,
+  "fields": {
+    "user_profile": 2,
+    "post": 4,
+    "content": "some new comment about Alice in Wonderland",
+    "created_at": "2024-11-29T14:56:57.657",
+    "updated_at": "2024-11-29T14:56:57.668"
+  }
+},
+{
+  "model": "posts.comment",
+  "pk": 4,
+  "fields": {
+    "user_profile": 1,
+    "post": 4,
+    "content": "some comment with permission - test",
+    "created_at": "2024-12-03T14:10:10.937",
+    "updated_at": "2024-12-03T14:10:10.937"
+  }
+},
+{
+  "model": "posts.comment",
+  "pk": 5,
+  "fields": {
+    "user_profile": 1,
+    "post": 2,
+    "content": "yes i can commment",
+    "created_at": "2024-12-03T20:50:42.501",
+    "updated_at": "2024-12-03T20:50:42.501"
+  }
+},
+{
+  "model": "posts.comment",
+  "pk": 6,
+  "fields": {
+    "user_profile": 1,
+    "post": 2,
+    "content": "yes i can commment",
+    "created_at": "2024-12-03T20:52:33.810",
+    "updated_at": "2024-12-03T20:52:33.810"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "post": 1,
+    "created_at": "2024-11-24T14:46:28.491",
+    "like_type": "like"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "post": 4,
+    "created_at": "2024-11-24T16:55:28.592",
+    "like_type": "dislike"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 3,
+  "fields": {
+    "user": 2,
+    "post": 2,
+    "created_at": "2024-11-24T17:18:42.735",
+    "like_type": "like"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 4,
+  "fields": {
+    "user": 2,
+    "post": 1,
+    "created_at": "2024-11-24T17:20:05.049",
+    "like_type": "nothing"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 5,
+  "fields": {
+    "user": 2,
+    "post": 3,
+    "created_at": "2024-11-24T17:44:56.700",
+    "like_type": "dislike"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 6,
+  "fields": {
+    "user": 3,
+    "post": 1,
+    "created_at": "2024-11-24T17:49:13.497",
+    "like_type": "like"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 7,
+  "fields": {
+    "user": 1,
+    "post": 2,
+    "created_at": "2024-11-24T17:51:10.761",
+    "like_type": "dislike"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 8,
+  "fields": {
+    "user": 1,
+    "post": 3,
+    "created_at": "2024-11-24T17:51:23.258",
+    "like_type": "like"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 9,
+  "fields": {
+    "user": 1,
+    "post": 4,
+    "created_at": "2024-11-24T17:51:45.581",
+    "like_type": "like"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 10,
+  "fields": {
+    "user": 4,
+    "post": 1,
+    "created_at": "2024-11-24T17:52:56.718",
+    "like_type": "dislike"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 11,
+  "fields": {
+    "user": 4,
+    "post": 2,
+    "created_at": "2024-11-24T17:53:25.124",
+    "like_type": "dislike"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 12,
+  "fields": {
+    "user": 4,
+    "post": 3,
+    "created_at": "2024-11-24T17:55:23.742",
+    "like_type": "dislike"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 13,
+  "fields": {
+    "user": 4,
+    "post": 4,
+    "created_at": "2024-11-24T17:55:37.555",
+    "like_type": "dislike"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 14,
+  "fields": {
+    "user": 3,
+    "post": 2,
+    "created_at": "2024-11-24T17:57:20.470",
+    "like_type": "like"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 15,
+  "fields": {
+    "user": 3,
+    "post": 3,
+    "created_at": "2024-11-24T17:57:57.968",
+    "like_type": "dislike"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 16,
+  "fields": {
+    "user": 3,
+    "post": 4,
+    "created_at": "2024-11-24T17:58:17.513",
+    "like_type": "like"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 17,
+  "fields": {
+    "user": 5,
+    "post": 1,
+    "created_at": "2024-12-02T20:13:56.210",
+    "like_type": "like"
+  }
+},
+{
+  "model": "posts.like",
+  "pk": 18,
+  "fields": {
+    "user": 5,
+    "post": 2,
+    "created_at": "2024-12-03T12:18:15.995",
+    "like_type": "like"
+  }
+}
+]
