@@ -10,6 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 
+from posts.tasks import publish_scheduled_posts
+
 from posts.models import Comment, Like, Post, Tag, UserProfile
 from posts.permissions import (
     IsAuthenticatedReadOnly,
@@ -190,7 +192,16 @@ class PostViewSet(
         serializer.save()
 
     def perform_create(self, serializer):
-        serializer.save()
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        post = serializer.save(user_profile=user_profile)
+        if post.scheduled_at:
+            publish_scheduled_posts.apply_async(
+                (post.id,),
+                eta=post.scheduled_at
+            )
+        else:
+            post.is_published = True
+            post.save()
 
     @extend_schema(
         parameters=[
