@@ -337,7 +337,7 @@ class UserProfileViewSet(
 
 class CommentViewSet(
     mixins.CreateModelMixin,
-    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     GenericViewSet,
@@ -345,4 +345,7 @@ class CommentViewSet(
 
     queryset = Comment.objects.all().select_related("user_profile", "post")
     serializer_class = CommentSerializer
-    # permission_classes = (OwnerOrReadOnlyProfile,)
+    permission_classes = (
+        IsAuthenticatedWithProfile,
+        OwnerOrReadOnlyProfile,
+    )
