@@ -54,7 +54,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(blank=True, null=True, upload_to=post_image_path)
-    tags = models.ManyToManyField(Tag, blank=True, null=True, related_name="tags")
+    tags = models.ManyToManyField(Tag, blank=True, related_name="tags")
     scheduled_time = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
