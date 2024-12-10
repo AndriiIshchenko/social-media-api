@@ -52,13 +52,13 @@ class PostViewSet(
         dislikes_amount=Count("likes", filter=Q(likes__like_type="dislike")),
     )
     serializer_class = PostSerializer
-    # permission_classes = (IsAuthenticatedWithProfile, PostOwner,)
+    permission_classes = (IsAuthenticatedReadOnly,)
 
     def get_permissions(self):
         def user_has_profile(user):
             try:
                 return bool(user.profile)
-            except ObjectDoesNotExist:
+            except AttributeError:
                 return False
 
         if user_has_profile(self.request.user):
@@ -195,10 +195,7 @@ class PostViewSet(
         user_profile = UserProfile.objects.get(user=self.request.user)
         post = serializer.save(user_profile=user_profile)
         if post.scheduled_at:
-            publish_scheduled_posts.apply_async(
-                (post.id,),
-                eta=post.scheduled_at
-            )
+            publish_scheduled_posts.apply_async((post.id,), eta=post.scheduled_at)
         else:
             post.is_published = True
             post.save()
