@@ -55,34 +55,26 @@ A step by step series of examples that tell you how to get a development env run
     git clone the-link-from-forked-repo
     ```
 2. Open the project folder in your IDE
-3. Copy settings from .env.example to .env and set values
-4. If you are using PyCharm - it may propose you to automatically create venv for your project and install requirements in it, but if not:
+   
+3. If you are using PyCharm - it may propose you to automatically create venv for your project and install requirements in it, but if not:
     ```
     python -m venv venv
     venv\Scripts\activate (on Windows)
     source venv/bin/activate (on macOS)
     pip install -r requirements.txt
     ```
-4. Run Redis with Docker for post scheduling.
+4. Run Redis with Docker and Celery worker for post scheduling.
     ```
     docker run -d -p 6379:6379 redis
+    celery -A social_media worker -l INFO
     ```
 
-5. You can use data from social_media_test_db.json for testing app.
+5. Creating superuser:
     ```
-    python manage.py loaddata social_media_test_db.json
+    python manage.py createsuperuser
     ```
 
-6. After loading data from fixture you can use following superuser (or create another one by yourself):
-  - email: `andrew@andrew.com`
-  - Password: `andrew`
-
-      - For creating superuser:
-          ```
-          python manage.py createsuperuser
-          ```
-
-7. If you want use app like user:
+6. If you want use app like user:
     1. Register in app:
         ```
         /api/user/register/
@@ -98,6 +90,9 @@ A step by step series of examples that tell you how to get a development env run
     - Authorized users can read posts and like or dislike them.
     
     For more actions you have to create profile.
+    
+    - `/api/posts/profiles/create-profile/`
+    
     Authorized users with profile can:
     - create posts (add images),
     - like, dislike posts,
@@ -117,6 +112,7 @@ Major endpoints for interacting with the application:
       - `/api/posts/posts/<id>/like/` - Like/dislike post or nothing.
       - `/api/posts/posts/<id>/upload_image/` - Upload image for post.
       - `/api/posts/profiles/` - List of profiles/add profile.
+      - `/api/posts/profiles/create-profile/` - Create profile.
       - `/api/posts/profiles/<id>/` - Manage profile.
       - `/api/posts/profiles/<id>/follow/` - Add profile to following.
       - `/api/posts/profiles/<id>/unfollow/` - Remove profile from following.
@@ -128,6 +124,7 @@ Major endpoints for interacting with the application:
       - `/api/user/token/refresh/` - Actualize your access token with refresh token .
       - `/api/user/token/verify/` - Verify token if it is valid.
       - `api/user/me/` - Manage your profile details.
+      - `api/user/logout/` - Logout (deactivate refresh token).
       
 ### Swagger API
 
