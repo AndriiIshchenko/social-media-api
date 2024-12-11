@@ -48,9 +48,9 @@ class PostSerializer(serializers.ModelSerializer):
             "likes_amount",
             "dislikes_amount",
             "tags",
-            "scheduled_time"
+            "scheduled_time",
         )
-        # read_only_fields = ("id", "user_profile")
+        read_only_fields = ("id", "user_profile")
 
     def create(self, validated_data):
         tags_data = validated_data.pop("tags", [])
@@ -214,7 +214,6 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
     def get_liked_posts(self, obj) -> List[str]:
         return [
             f"{like.post.user_profile.nickname} posted: '{like.post.content[:60]}'."
-            # f"{like.post.nickname}: '{like.post.content[:60]}...'"
             for like in obj.user.likes.all()
             if like.like_type == "like"
         ]
@@ -222,7 +221,6 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
     def get_disliked_posts(self, obj) -> List[str]:
         return [
             f"{like.post.user_profile.nickname} posted: '{like.post.content[:60]}'."
-            # f"{like.post.nickname}: '{like.post.content[:60]}...'"
             for like in obj.user.likes.all()
             if like.like_type == "dislike"
         ]

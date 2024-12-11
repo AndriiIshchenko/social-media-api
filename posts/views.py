@@ -1,4 +1,3 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Count
 from rest_framework import mixins, status
 from rest_framework.viewsets import GenericViewSet
@@ -61,7 +60,7 @@ class PostViewSet(
         Authorized users with priile have acess to profile list and details.
         Owners can edit profile, posts.
         """
-        
+
         def user_has_profile(user):
             try:
                 return bool(user.profile)
@@ -86,7 +85,6 @@ class PostViewSet(
         """Retrieve posts with filters"""
 
         queryset = self.queryset.filter(is_published=True)
-        #queryset = self.queryset
         nickname = self.request.query_params.get("nickname")
         tags = self.request.query_params.getlist("tag")
 
@@ -171,8 +169,6 @@ class PostViewSet(
             post=post,
             content=request.data.get("content"),
         )
-        # comment.save()
-
         serializer = self.get_serializer(comment)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -307,7 +303,6 @@ class UserProfileViewSet(
         methods=["POST"],
         detail=True,
         url_path="follow",
-        # permission_classes=(IsAuthenticated,),
     )
     def follow(self, request, pk=None):
         profile_to_follow = self.get_object()
@@ -328,7 +323,6 @@ class UserProfileViewSet(
         methods=["POST"],
         detail=True,
         url_path="unfollow",
-        # permission_classes=(IsAuthenticated,),
     )
     def unfollow(self, request, pk=None):
         profile_to_unfollow = self.get_object()

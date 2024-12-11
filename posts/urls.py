@@ -13,7 +13,6 @@ router.register("comments", CommentViewSet)
 router.register("create-profile", CreateProfile, basename="create-profile")
 
 
-
 urlpatterns = [
     path("", include(router.urls)),
 ]
