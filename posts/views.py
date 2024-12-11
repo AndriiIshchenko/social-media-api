@@ -52,9 +52,16 @@ class PostViewSet(
         dislikes_amount=Count("likes", filter=Q(likes__like_type="dislike")),
     )
     serializer_class = PostSerializer
-    permission_classes = (IsAuthenticatedReadOnly,)
 
     def get_permissions(self):
+        """
+        Authorized users have readonly access to post list and post details.
+        Authorized users have full access to to action 'like' to add likes to post.
+        Authorized users with created profile have access to post and comments creation.
+        Authorized users with priile have acess to profile list and details.
+        Owners can edit profile, posts.
+        """
+        
         def user_has_profile(user):
             try:
                 return bool(user.profile)
@@ -78,7 +85,8 @@ class PostViewSet(
     def get_queryset(self):
         """Retrieve posts with filters"""
 
-        queryset = self.queryset
+        queryset = self.queryset.filter(is_published=True)
+        #queryset = self.queryset
         nickname = self.request.query_params.get("nickname")
         tags = self.request.query_params.getlist("tag")
 
@@ -194,8 +202,8 @@ class PostViewSet(
     def perform_create(self, serializer):
         user_profile = UserProfile.objects.get(user=self.request.user)
         post = serializer.save(user_profile=user_profile)
-        if post.scheduled_at:
-            publish_scheduled_posts.apply_async((post.id,), eta=post.scheduled_at)
+        if post.scheduled_time:
+            publish_scheduled_posts.apply_async((post.id,), eta=post.scheduled_time)
         else:
             post.is_published = True
             post.save()
@@ -220,8 +228,21 @@ class PostViewSet(
         return super().list(request, *args, **kwargs)
 
 
-class UserProfileViewSet(
+class CreateProfile(
     mixins.CreateModelMixin,
+    GenericViewSet,
+):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        if UserProfile.objects.filter(user=self.request.user).exists():
+            raise ValidationError("User already has profile")
+        serializer.save(user=self.request.user)
+
+
+class UserProfileViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
@@ -268,11 +289,6 @@ class UserProfileViewSet(
         if self.action == "unfollow":
             return UserProfileUnfollowSerializer
         return UserProfileSerializer
-
-    def perform_create(self, serializer):
-        if UserProfile.objects.filter(user=self.request.user).exists():
-            raise ValidationError("User already has profile")
-        serializer.save(user=self.request.user)
 
     @action(
         methods=["POST"],
