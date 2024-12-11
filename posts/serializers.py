@@ -48,6 +48,7 @@ class PostSerializer(serializers.ModelSerializer):
             "likes_amount",
             "dislikes_amount",
             "tags",
+            "scheduled_time"
         )
         # read_only_fields = ("id", "user_profile")
 
