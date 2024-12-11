@@ -56,6 +56,7 @@ class Post(models.Model):
     image = models.ImageField(blank=True, null=True, upload_to=post_image_path)
     tags = models.ManyToManyField(Tag, blank=True, related_name="tags")
     scheduled_time = models.DateTimeField(blank=True, null=True)
+    is_published = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user_profile}"
