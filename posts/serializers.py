@@ -33,8 +33,6 @@ class CommentForPostSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    likes_amount = serializers.IntegerField(read_only=True)
-    dislikes_amount = serializers.IntegerField(read_only=True)
     tags = TagSerializer(many=True, required=False)
 
     class Meta:
@@ -45,8 +43,6 @@ class PostSerializer(serializers.ModelSerializer):
             "user_profile",
             "created_at",
             "updated_at",
-            "likes_amount",
-            "dislikes_amount",
             "tags",
             "scheduled_time",
         )
@@ -86,8 +82,8 @@ class PostImageSerializer(serializers.ModelSerializer):
 
 
 class PostListSerializer(serializers.ModelSerializer):
-    likes_amount = serializers.IntegerField(read_only=True)
-    dislikes_amount = serializers.IntegerField(read_only=True)
+    likes_amount = serializers.SerializerMethodField()
+    dislikes_amount = serializers.SerializerMethodField()
     comments_amount = serializers.SerializerMethodField()
     short_content = serializers.SerializerMethodField()
     user_profile = serializers.SlugRelatedField(
@@ -113,13 +109,19 @@ class PostListSerializer(serializers.ModelSerializer):
     def get_comments_amount(self, obj) -> int:
         return obj.comments.count()
 
+    def get_likes_amount(self, obj) -> int:
+        return obj.likes.filter(like_type="like").count()
+
+    def get_dislikes_amount(self, obj) -> int:
+        return obj.likes.filter(like_type="dislike").count()
+
     def get_short_content(self, obj) -> str:
         return f"{obj.content[:60]} ..."
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
-    likes_amount = serializers.IntegerField(read_only=True)
-    dislikes_amount = serializers.IntegerField(read_only=True)
+    likes_amount = serializers.SerializerMethodField()
+    dislikes_amount = serializers.SerializerMethodField()
     comments = CommentForPostSerializer(read_only=True, many=True)
     user_profile = serializers.SlugRelatedField(
         many=False, read_only=True, slug_field="nickname"
@@ -140,6 +142,12 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "image",
             "tags",
         )
+
+    def get_dislikes_amount(self, obj) -> int:
+        return obj.likes.filter(like_type="dislike").count()
+
+    def get_likes_amount(self, obj) -> int:
+        return obj.likes.filter(like_type="like").count()
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
