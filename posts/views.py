@@ -365,5 +365,5 @@ class CommentViewSet(
     serializer_class = CommentSerializer
     permission_classes = (
         IsAuthenticatedWithProfile,
-        OwnerOrReadOnlyProfile,
+        PostOwner,
     )
