@@ -50,7 +50,7 @@ class Post(models.Model):
     user_profile = models.ForeignKey(
         UserProfile, on_delete=models.CASCADE, related_name="posts"
     )
-    content = models.TextField(blank=True, null=False)
+    content = models.TextField(blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(blank=True, null=True, upload_to=post_image_path)
