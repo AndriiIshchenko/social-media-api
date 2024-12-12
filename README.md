@@ -135,4 +135,4 @@ Major endpoints for interacting with the application:
 - `/api/doc/redoc/`
 
 ### DB Structure:
-![alt text](media/readme/social_media_db_diagram_light.png)
+![alt text](readme_image/social_media_db_diagram_light.png)
